@@ -1,6 +1,6 @@
 # MendelAimSelection
 
-[![Build Status](https://travis-ci.org/ericsobel/AimSelection.jl.svg?branch=master)](https://travis-ci.org/ericsobel/AimSelection.jl)
+[![Build Status](https://travis-ci.org/OpenMendel/MendelAimSelection.jl.svg?branch=master)](https://travis-ci.org/OpenMendel/MendelAimSelection.jl)
 
 This module performs a principal components analysis (PCA) using the top ancestry informative markers (AIMs) in the data
 set.
