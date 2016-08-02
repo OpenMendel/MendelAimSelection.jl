@@ -3,15 +3,17 @@ This module orchestrates the selection of the most informative AIMs.
 """
 module MendelAimSelection
 #
-# Other OpenMendel modules.
+# Required OpenMendel packages and modules.
 #
 using MendelBase
+# using DataStructures                  # Now in MendelBase.
+# using GeneralUtilities                # Now in MendelBase.
 using SnpArrays
 #
-# External modules.
+# Required external modules.
 #
-using DataFrames    # From package DataFrames.
-using Distributions # From package Distributions.
+using DataFrames                        # From package DataFrames.
+using Distributions                     # From package Distributions.
 
 export AimSelection
 
@@ -37,9 +39,10 @@ function AimSelection(control_file = ""; args...)
   #
   keyword = set_keyword_defaults!(Dict{ASCIIString, Any}())
   #
-  # Keywords unique to this analysis may be defined here
+  # Keywords unique to this analysis should be first defined here
   # by setting their default values using the format:
-  # keyword["some_keyword_name"] = value
+  # keyword["some_keyword_name"] = default_value
+  #
   #
   # Process the run-time user-specified keywords that will control the analysis.
   # This will also initialize the random number generator.
@@ -65,9 +68,8 @@ function AimSelection(control_file = ""; args...)
   # Execute the specified analysis.
   #
   println(" \nAnalyzing the data.\n")
-  execution_error = aim_selection_option(pedigree, person, nuclear_family,
-    locus, snpdata, locus_frame, phenotype_frame, pedigree_frame,
-    snp_definition_frame, keyword)
+  execution_error = aim_selection_option(person, snpdata,
+    pedigree_frame, snp_definition_frame, keyword)
   if execution_error
     println(" \n \nERROR: Mendel terminated prematurely!\n")
   else
@@ -84,14 +86,12 @@ function AimSelection(control_file = ""; args...)
 end # function AimSelection
 
 """
-This function uses a likelihood ratio test to rank SNPs
-by their ancestry information content. All people should be
-assigned ancestry fractions and fully SNP-typed.
+Ranks SNPs by their ancestry information content. All people should 
+be assigned ancestry fractions and be fully typed. Ranks are assigned
+by a likelihood ratio heterogeneity test. 
 """
-function aim_selection_option(pedigree::Pedigree, person::Person,
-  nuclear_family::NuclearFamily, locus::Locus, snpdata::SnpData, 
-  locus_frame::DataFrame, phenotype_frame::DataFrame, 
-  pedigree_frame::DataFrame, snp_definition_frame::DataFrame,
+function aim_selection_option(person::Person, snpdata::SnpData, 
+  pedigree_frame::DataFrame, snp_definition_frame::DataFrame, 
   keyword::Dict{ASCIIString, Any})
   #
   # Define scalar constants.
@@ -99,9 +99,18 @@ function aim_selection_option(pedigree::Pedigree, person::Person,
   populations = person.populations
   people = person.people
   snps = snpdata.snps
+  pedigree_field = names(pedigree_frame)
+  if !(:Ethnic in pedigree_field)
+    throw(ArgumentError("The Ethnic field is missing from the " *
+      "pedigree frame. \n"))
+  end
   #
-  # Allocate arrays.
+  # Allocate arrays and catalogue the ethnic groups.
   #
+  ethnic = blanks(people)
+  copy!(ethnic, pedigree_frame[:Ethnic])
+  population = unique(ethnic)
+  populations = length(population)
   alleles = zeros(populations)
   genes = zeros(populations)
   dosage = zeros(people)
@@ -123,16 +132,14 @@ function aim_selection_option(pedigree::Pedigree, person::Person,
     fill!(genes, 0.0)
     for i = 1:people
       if isnan(dosage[i]); continue; end
+      if ethnic[i] == "" || isna(ethnic[i]); continue; end
+      j = findfirst(population, ethnic[i])
       if xlinked && person.male[i]
-        for j = 1:populations
-          alleles[j] = alleles[j] + 0.5 * person.admixture[i, j] * dosage[i]
-          genes[j] = genes[j] + person.admixture[i, j]
-        end
+        alleles[j] = alleles[j] + 0.5 * dosage[i]
+        genes[j] = genes[j] + 1.0       
       else
-        for j = 1:populations
-          alleles[j] = alleles[j] + person.admixture[i, j] * dosage[i]
-          genes[j] = genes[j] + 2.0 * person.admixture[i, j]
-        end
+        alleles[j] = alleles[j] + dosage[i]
+        genes[j] = genes[j] + 2.0
       end
     end
     #
@@ -144,25 +151,27 @@ function aim_selection_option(pedigree::Pedigree, person::Person,
       if genes[j] > 0.0
         p = alleles[j] / genes[j]
       end
-      n = round(Int, genes[j])
-      x = round(Int, alleles[j])
-      lrt = lrt + logpdf(Binomial(n, p), x)
+      if 0.0 < p < 1.0
+        n = round(Int, genes[j])
+        x = round(Int, alleles[j])
+        lrt = lrt + x * log(p) + (n - x)*log(1.0 - p)
+      end
     end
     #
     # Subtract the maximum loglikelihood for the entire sample.
+    # Based on this, compute the likelihood ratio p-value.
     #
     p = sum(alleles)/sum(genes)
-    n = round(Int, sum(genes))
-    x = round(Int, sum(alleles))
-    #
-    # Compute the likelihood ratio pvalue.
-    #
-    lrt = lrt - logpdf(Binomial(n, p), x)
-    pvalue[snp] = ccdf(Chisq(1), lrt)
+    if 0.0 < p < 1.0
+      n = round(Int, sum(genes))
+      x = round(Int, sum(alleles))
+      lrt = 2.0*(lrt - x * log(p) - (n - x)*log(1.0 - p))
+      pvalue[snp] = ccdf(Chisq(1), lrt) 
+    end
   end
   #
-  # Rank snps by their pvalues and deposit the rank of each snp in the
-  # snp definition frame.
+  # Rank SNPs by their p-values and deposit the rank of each SNP
+  # in the SNP definition frame.
   #
   aim_rank = ordinalrank(pvalue)
   snp_definition_frame[:AIMRank] = aim_rank
