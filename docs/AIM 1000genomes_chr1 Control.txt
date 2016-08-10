@@ -7,7 +7,5 @@ snpdefinition_file = 1000genomes_chr1_eas.snp
 pedigree_file = 1000genomes_chr1_eas.ped
 output_file = 1000genomes_chr1_eas Output.txt
 #
-# Analysis parameters.
+# Analysis parameters for AIM Selection option.
 #
-analysis_option = AIMSelection
-
