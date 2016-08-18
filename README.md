@@ -1,6 +1,6 @@
 # MendelAimSelection
 
-This [Julia](http://julialang.org/) package selects the SNPs that are most informative at predicting ancestry for your data — the best Ancestry Informative Markers (AIMs). It is one component of the umbrella [OpenMendel](https://openmendel.github.io) project.
+This [Julia](http://julialang.org/) package selects the SNPs that are most informative at predicting ancestry for your data — the best Ancestry Informative Markers (AIMs). MendelAimSelection is one component of the umbrella [OpenMendel](https://openmendel.github.io) project.
 
 [![](https://img.shields.io/badge/docs-current-blue.svg)](https://OpenMendel.github.io/MendelAimSelection.jl)
 
@@ -22,11 +22,17 @@ There are example data files in the "docs" subfolder of each Mendel package, for
 
 ## Running the Analysis
 
-To run this analysis package, first launch Julia. Then load the package with the command:     julia> using MendelAimSelection
+To run this analysis package, first launch Julia. Then load the package with the command:
+
+     julia> using MendelAimSelection
 
 Next, if necessary, change to the directory containing your files, for example,
 
-     julia> cd("~/path/to/data/files/")Finally, to run the analysis using the parameters in the control file Control_file.txt use the command:     julia> AimSelection("Control_file.txt")
+     julia> cd("~/path/to/data/files/")
+
+Finally, to run the analysis using the parameters in the control file Control_file.txt use the command:
+
+     julia> AimSelection("Control_file.txt")
 
 *Note: The package is called* MendelAimSelection *but the analysis function is called simply* AimSelection.
 
