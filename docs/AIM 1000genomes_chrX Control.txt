@@ -3,7 +3,7 @@
 #
 field_separator = 
 snpdata_file = 1000genomes_chrX_eas.bed
-snpdefinition_file = 1000genomes_chrX_eas.snp
+snpdefinition_file = 1000genomes_chrX_eas.bim
 pedigree_file = 1000genomes_chrX_eas.ped
 output_file = 1000genomes_chrX_eas Output.txt
 #

@@ -6,12 +6,13 @@ module MendelAimSelection
 # Required OpenMendel packages and modules.
 #
 using MendelBase
-# using DataStructures                  # Now in MendelBase.
-# using GeneralUtilities                # Now in MendelBase.
 using SnpArrays
 #
 # Required external modules.
 #
+using Compat
+import Compat: view
+
 using DataFrames                        # From package DataFrames.
 using Distributions                     # From package Distributions.
 
@@ -37,7 +38,7 @@ function AimSelection(control_file = ""; args...)
   # The user specifies the analysis to perform via a set of keywords.
   # Start the keywords at their default values.
   #
-  keyword = set_keyword_defaults!(Dict{ASCIIString, Any}())
+  keyword = set_keyword_defaults!(Dict{AbstractString, Any}())
   #
   # Keywords unique to this analysis should be first defined here
   # by setting their default values using the format:
@@ -92,7 +93,7 @@ by a likelihood ratio heterogeneity test.
 """
 function aim_selection_option(person::Person, snpdata::SnpData, 
   pedigree_frame::DataFrame, snp_definition_frame::DataFrame, 
-  keyword::Dict{ASCIIString, Any})
+  keyword::Dict{AbstractString, Any})
   #
   # Define scalar constants.
   #
@@ -123,7 +124,7 @@ function aim_selection_option(person::Person, snpdata::SnpData,
     #
     # Copy the current SNP genotypes into a dosage vector.
     #
-    copy!(dosage, slice(snpdata.snpmatrix, :, snp); impute = false)
+    copy!(dosage, view(snpdata.snpmatrix, :, snp); impute = false)
     #
     # Tally reference alleles and genes in each population.
     #
@@ -175,7 +176,15 @@ function aim_selection_option(person::Person, snpdata::SnpData,
   #
   aim_rank = ordinalrank(pvalue)
   snp_definition_frame[:AIMRank] = aim_rank
+  #
+  # Display the SNP's AIM rank on the screen and in a file, if requested.
+  #
   show(snp_definition_frame)
+  output_file = keyword["output_file"]
+  if output_file != ""
+    writetable(output_file, snp_definition_frame)
+  end
+
   return execution_error = false
 end # function aim_selection_option
 
