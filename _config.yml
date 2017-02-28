@@ -1,0 +1,8 @@
+title: MendelAimSelection.jl
+description: This analysis option selects the SNPs that are most informative at predicting ancestry for your data — the best Ancestry Informative Markers (AIMs).
+google_analytics: 
+show_downloads: true
+theme: jekyll-theme-slate
+
+gems:
+  - jekyll-mentions
