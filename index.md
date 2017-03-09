@@ -1,8 +1,8 @@
 ### Overview
 Mendel AIM Selection is a component of the umbrella [OpenMendel](https://openmendel.github.io) project. This analysis option selects the SNPs that are most informative at predicting ancestry for your data — the best Ancestry Informative Markers (AIMs).
 
-### Appropriate Problems and Data Sets
-
+<!--- ### Appropriate Problems and Data Sets
+ ... --->
 
 ### Installation
 *Note: The three OpenMendel packages (1) [SnpArrays](https://openmendel.github.io/SnpArrays.jl/latest/), (2) [Search](https://openmendel.github.io/Search.jl), and (3) [MendelBase](https://openmendel.github.io/MendelBase.jl) must be installed before any other OpenMendel package will run. It is easiest if these three packages are installed in the above order and before any other OpenMendel package.*
@@ -14,7 +14,7 @@ Within Julia, use the package manager to install MendelAimSelection:
 This package supports Julia v0.4 and v0.5.
 
 ### Input Files
-The MendelAimSelection analysis package uses the following input files. Example input files can be found in the [docs]( https://github.com/OpenMendel/MendelAimSelection.jl/tree/master/docs) subfolder of the MendelAimSelection project. (An analysis won't always need every file type below.)
+The MendelAimSelection analysis package uses the following input files. Example input files can be found in the [docs](https://github.com/OpenMendel/MendelAimSelection.jl/tree/master/docs) subfolder of the MendelAimSelection project. (An analysis won't always need every file type below.)
 
 * [Control File](#control-file): Specifies the names of your data input and output files and any optional parameters (*keywords*) for the analysis. (For a list of common keywords, see [Keywords Table](https://openmendel.github.io/MendelBase.jl/#keywords-table)).
 * [Locus File](https://openmendel.github.io/MendelBase.jl/#locus-file): Names and describes the genetic loci in your data.
@@ -23,7 +23,8 @@ The MendelAimSelection analysis package uses the following input files. Example 
 * [SNP Definition File](https://openmendel.github.io/MendelBase.jl/#snp-definition-file): Defines your SNPs with information such as SNP name, chromosome, position, allele names, allele frequencies.
 * [SNP Data File](https://openmendel.github.io/MendelBase.jl/#snp-data-file): Holds the genotypes for your data set. Must be a standard binary PLINK BED file in SNP major format. If you have a SNP data file you must have a SNP definition file.
 
-### Control file<a id="control-file"></a>
+<a id="control-file"></a>
+### Control file
 The Control file is a text file consisting of keywords and their assigned values. The format of the Control file is:
 
 	Keyword = Keyword_Value(s)
@@ -44,7 +45,7 @@ Below is an example of a simple Control file to run AIM Selection:
 In the example above, the four keywords specify the input and output files: *1000genomes_chr1_eas.bed*, *1000genomes_chr1_eas.snp*, *1000genomes_chr1_eas.ped* and *1000genomes_chr1_eas Output.txt*. The text after the '=' are the keyword values. The names of keywords are *not* case sensitive. (The keyword values *may* be case sensitive.) A list of OpenMendel keywords common to most analysis package can be found [here](https://openmendel.github.io/MendelBase.jl/#keywords-table).
 
 ### Data Files
-AIM Selection requires a [Control file](https://openmendel.github.io/MendelBase.jl/#control-file), and a [Pedigree file](https://openmendel.github.io/MendelBase.jl/#pedigree-file). Genotype data can be included in the Pedigree file, in which case a [Locus file](https://openmendel.github.io/MendelBase.jl/#locus-file) is required. Alternatively, genotype data can be provided in a [SNP data file]( https://openmendel.github.io/MendelBase.jl/#snp-data-file), in which case a [SNP Definition File]( https://openmendel.github.io/MendelBase.jl/#snp-definition-file) is required. OpenMendel will also accept [PLINK format](http://pngu.mgh.harvard.edu/~purcell/plink/data.shtml) FAM and BIM files. Details on the format and contents of the Control and data files can be found on the [MendelBase](https://openmendel.github.io/MendelBase.jl) documentation page. There are example data files in the AIM Selection [docs](https://github.com/OpenMendel/MendelAIMSelection.jl/tree/master/docs) folder.
+AIM Selection requires a [Control file](https://openmendel.github.io/MendelBase.jl/#control-file), and a [Pedigree file](https://openmendel.github.io/MendelBase.jl/#pedigree-file). Genotype data can be included in the Pedigree file, in which case a [Locus file](https://openmendel.github.io/MendelBase.jl/#locus-file) is required. Alternatively, genotype data can be provided in a [SNP data file](https://openmendel.github.io/MendelBase.jl/#snp-data-file), in which case a [SNP Definition File](https://openmendel.github.io/MendelBase.jl/#snp-definition-file) is required. OpenMendel will also accept [PLINK format](http://zzz.bwh.harvard.edu/plink) FAM and BIM files. Details on the format and contents of the Control and data files can be found on the [MendelBase](https://openmendel.github.io/MendelBase.jl) documentation page. There are example data files in the AIM Selection [docs](https://github.com/OpenMendel/MendelAIMSelection.jl/tree/master/docs) folder.
 
 ### Running the Analysis
 
