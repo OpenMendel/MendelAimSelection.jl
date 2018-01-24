@@ -12,7 +12,7 @@ Within Julia, use the package manager to install MendelAimSelection:
 
     Pkg.clone("https://github.com/OpenMendel/MendelAimSelection.jl.git")
 
-This package supports Julia v0.4 and v0.5.
+This package supports Julia v0.5 and v0.6.
 
 ## Data Files
 
