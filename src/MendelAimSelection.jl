@@ -15,6 +15,7 @@ import Compat: view
 
 using DataFrames                        # From package DataFrames.
 using Distributions                     # From package Distributions.
+using StatsBase                         # From package StatsBase.
 
 export AimSelection
 
@@ -133,7 +134,7 @@ function aim_selection_option(person::Person, snpdata::SnpData,
     fill!(genes, 0.0)
     for i = 1:people
       if isnan(dosage[i]); continue; end
-      if ethnic[i] == "" || isna(ethnic[i]); continue; end
+      if ethnic[i] == "" || ismissing(ethnic[i]); continue; end
       j = findfirst(population, ethnic[i])
       if xlinked && person.male[i]
         alleles[j] = alleles[j] + 0.5 * dosage[i]
@@ -174,7 +175,7 @@ function aim_selection_option(person::Person, snpdata::SnpData,
   # Rank SNPs by their p-values and deposit the rank of each SNP
   # in the SNP definition frame.
   #
-  aim_rank = ordinalrank(pvalue)
+  aim_rank = StatsBase.ordinalrank(pvalue)
   snp_definition_frame[:AIMRank] = aim_rank
   #
   # Display the SNP's AIM rank on the screen and in a file, if requested.

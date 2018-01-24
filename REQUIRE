@@ -3,6 +3,7 @@ Compat
 
 DataFrames
 Distributions
+StatsBase
 
 MendelBase
 SnpArrays
