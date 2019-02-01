@@ -1,3 +1,5 @@
+__precompile__()
+
 """
 This module orchestrates the selection of the most informative AIMs.
 """
@@ -10,12 +12,11 @@ using SnpArrays
 #
 # Required external modules.
 #
-using Compat
-import Compat: view
-
-using DataFrames                        # From package DataFrames.
-using Distributions                     # From package Distributions.
-using StatsBase                         # From package StatsBase.
+using CSV
+using DataFrames
+using Distributions
+using Missings
+using StatsBase
 
 export AimSelection
 
@@ -24,7 +25,7 @@ This is the wrapper function for the AIM Selection analysis option.
 """
 function AimSelection(control_file = ""; args...)
 
-  const AIM_SELECTION_VERSION :: VersionNumber = v"0.1.0"
+  AIM_SELECTION_VERSION :: VersionNumber = v"0.1.0"
   #
   # Print the logo. Store the initial directory.
   #
@@ -92,7 +93,7 @@ Ranks SNPs by their ancestry information content. All people should
 be assigned ancestry fractions and be fully typed. Ranks are assigned
 by a likelihood ratio heterogeneity test. 
 """
-function aim_selection_option(person::Person, snpdata::SnpData, 
+function aim_selection_option(person::Person, snpdata::SnpDataStruct, 
   pedigree_frame::DataFrame, snp_definition_frame::DataFrame, 
   keyword::Dict{AbstractString, Any})
   #
@@ -101,16 +102,18 @@ function aim_selection_option(person::Person, snpdata::SnpData,
   populations = person.populations
   people = person.people
   snps = snpdata.snps
-  pedigree_field = names(pedigree_frame)
-  if !(:Ethnic in pedigree_field)
-    throw(ArgumentError("The Ethnic field is missing from the " *
-      "pedigree frame. \n"))
-  end
   #
   # Allocate arrays and catalogue the ethnic groups.
   #
   ethnic = blanks(people)
-  copy!(ethnic, pedigree_frame[:Ethnic])
+  pedigree_field = names(pedigree_frame)
+  ethnic_in_ped = (:Ethnic in pedigree_field)
+  if ethnic_in_ped
+    copyto!(ethnic, pedigree_frame[:Ethnic])
+  else
+    throw(ArgumentError("The Ethnic field is not included " *
+      "in the pedigree data.\n \n"))
+  end
   population = unique(ethnic)
   populations = length(population)
   alleles = zeros(populations)
@@ -125,7 +128,7 @@ function aim_selection_option(person::Person, snpdata::SnpData,
     #
     # Copy the current SNP genotypes into a dosage vector.
     #
-    copy!(dosage, view(snpdata.snpmatrix, :, snp); impute = false)
+    copyto!(dosage, view(snpdata.snpmatrix, :, snp); impute = false)
     #
     # Tally reference alleles and genes in each population.
     #
@@ -135,7 +138,7 @@ function aim_selection_option(person::Person, snpdata::SnpData,
     for i = 1:people
       if isnan(dosage[i]); continue; end
       if ethnic[i] == "" || ismissing(ethnic[i]); continue; end
-      j = findfirst(population, ethnic[i])
+      j = something(findfirst(isequal(ethnic[i]), population), 0)
       if xlinked && person.male[i]
         alleles[j] = alleles[j] + 0.5 * dosage[i]
         genes[j] = genes[j] + 1.0       
@@ -181,13 +184,22 @@ function aim_selection_option(person::Person, snpdata::SnpData,
   # Display the SNP's AIM rank on the screen and in a file, if requested.
   #
   show(snp_definition_frame)
-  output_file = keyword["output_file"]
+  output_file = string(keyword["output_file"])
   if output_file != ""
-    writetable(output_file, snp_definition_frame)
+    CSV.write(output_file, snp_definition_frame;
+      writeheader = true, delim = keyword["output_field_separator"],
+      missingstring = keyword["output_missing_value"])
   end
 
   return execution_error = false
 end # function aim_selection_option
+#
+# Method to obtain path to this package's data files
+# so they can be used in the documentation and testing routines.
+# For example, datadir("Control file.txt") will return
+# "/path/to/package/data/Control file.txt"
+#
+datadir(parts...) = joinpath(@__DIR__, "..", "data", parts...)
 
 end # module MendelAimSelection
 

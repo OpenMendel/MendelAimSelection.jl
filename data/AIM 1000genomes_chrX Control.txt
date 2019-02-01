@@ -1,0 +1,14 @@
+#
+# Input and Output files.
+#
+field_separator = ' '
+pedigree_file = 1000genomes_chrX_eas.ped
+
+plink_field_separator = '	'
+plink_input_basename = 1000genomes_chrX_eas
+
+output_field_separator = ','
+output_file = 1000genomes_chrX_eas Output.txt
+#
+# Analysis parameters for AIM Selection option.
+#
