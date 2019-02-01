@@ -5,13 +5,13 @@ Mendel AIM Selection is a component of the umbrella [OpenMendel](https://openmen
  ... --->
 
 ### Installation
-*Note: The three OpenMendel packages (1) [SnpArrays](https://openmendel.github.io/SnpArrays.jl/latest/), (2) [Search](https://openmendel.github.io/Search.jl), and (3) [MendelBase](https://openmendel.github.io/MendelBase.jl) must be installed before any other OpenMendel package will run. It is easiest if these three packages are installed in the above order and before any other OpenMendel package.*
+*Note: The three OpenMendel packages (1) [SnpArrays](https://openmendel.github.io/SnpArrays.jl/latest/), (2) [MendelSearch](https://openmendel.github.io/MendelSearch.jl), and (3) [MendelBase](https://openmendel.github.io/MendelBase.jl) must be installed before any other OpenMendel package will run. It is easiest if these three packages are installed in the above order and before any other OpenMendel package.*
 
 Within Julia, use the package manager to install MendelAimSelection:
 
-    Pkg.clone("https://github.com/OpenMendel/MendelAimSelection.jl.git")
+    (v1.1) pkg> add https://github.com/OpenMendel/MendelAimSelection.jl.git
 
-This package supports Julia v0.4 and v0.5.
+This package supports Julia v1.0+
 
 ### Input Files
 The MendelAimSelection analysis package uses the following input files. Example input files can be found in the [docs](https://github.com/OpenMendel/MendelAimSelection.jl/tree/master/docs) subfolder of the MendelAimSelection project. (An analysis won't always need every file type below.)
