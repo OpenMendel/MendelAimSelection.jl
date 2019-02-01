@@ -9,12 +9,12 @@ Mendel AIM Selection is a component of the umbrella [OpenMendel](https://openmen
 
 Within Julia, use the package manager to install MendelAimSelection:
 
-    (v1.1) pkg> add https://github.com/OpenMendel/MendelAimSelection.jl.git
+    pkg> add https://github.com/OpenMendel/MendelAimSelection.jl.git
 
 This package supports Julia v1.0+
 
 ### Input Files
-The MendelAimSelection analysis package uses the following input files. Example input files can be found in the [docs](https://github.com/OpenMendel/MendelAimSelection.jl/tree/master/docs) subfolder of the MendelAimSelection project. (An analysis won't always need every file type below.)
+The MendelAimSelection analysis package uses the following input files. Example input files can be found in the [data](https://github.com/OpenMendel/MendelAimSelection.jl/tree/master/data) subfolder of the MendelAimSelection project. (An analysis won't always need every file type below.)
 
 * [Control File](#control-file): Specifies the names of your data input and output files and any optional parameters (*keywords*) for the analysis. (For a list of common keywords, see [Keywords Table](https://openmendel.github.io/MendelBase.jl/#keywords-table)).
 * [Locus File](https://openmendel.github.io/MendelBase.jl/#locus-file): Names and describes the genetic loci in your data.
