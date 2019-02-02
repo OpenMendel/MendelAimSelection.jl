@@ -1,7 +1,7 @@
 name = "MendelAimSelection"
 desc = "Selecting Ancestry Informative Markers; part of the OpenMendel project."
 uuid = "8a9f0eb4-fec1-5450-8bd2-8ca811e15b0d"
-version = "0.1.0"
+version = "0.5.0"
 license = "MIT"
 authors = ["Kenneth Lange", "Eric Sobel"]
 keywords = ["OpenMendel", "Ancestry Informative Markers", "AIMs"]
