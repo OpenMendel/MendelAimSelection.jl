@@ -25,7 +25,7 @@ This is the wrapper function for the AIM Selection analysis option.
 """
 function AimSelection(control_file = ""; args...)
 
-  AIM_SELECTION_VERSION :: VersionNumber = v"0.1.0"
+  AIM_SELECTION_VERSION :: VersionNumber = v"0.5.0"
   #
   # Print the logo. Store the initial directory.
   #
