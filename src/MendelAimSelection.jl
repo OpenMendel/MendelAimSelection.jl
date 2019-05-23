@@ -57,8 +57,8 @@ function AimSelection(control_file = ""; args...)
   lc_analysis_option = lowercase(keyword["analysis_option"])
   if (lc_analysis_option != "" &&
       lc_analysis_option != "aimselection")
-     throw(ArgumentError(
-       "An incorrect analysis option was specified.\n \n"))
+    throw(ArgumentError(
+      "An incorrect analysis option was specified.\n \n"))
   end
   keyword["analysis_option"] = "AimSelection"
   #
@@ -68,15 +68,22 @@ function AimSelection(control_file = ""; args...)
     locus_frame, phenotype_frame, pedigree_frame, snp_definition_frame) =
     read_external_data_files(keyword)
   #
+  # Check if SNP data were read.
+  #
+  if snpdata.snps == 0
+    println(" \n\nERROR: This analysis requires SNP data and none were read!\n")
+  else
+  #
   # Execute the specified analysis.
   #
-  println(" \nAnalyzing the data.\n")
-  execution_error = aim_selection_option(person, snpdata,
-    pedigree_frame, snp_definition_frame, keyword)
-  if execution_error
-    println(" \n \nERROR: Mendel terminated prematurely!\n")
-  else
-    println(" \n \nMendel's analysis is finished.\n")
+    println(" \nAnalyzing the data.\n")
+    execution_error = aim_selection_option(person, snpdata,
+      pedigree_frame, snp_definition_frame, keyword)
+    if execution_error
+      println(" \n \nERROR: Mendel terminated prematurely!\n")
+    else
+      println(" \n \nMendel's analysis is finished.\n")
+    end
   end
   #
   # Finish up by closing, and thus flushing, any output files.
