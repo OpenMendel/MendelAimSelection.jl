@@ -24,15 +24,12 @@ export AimSelection
 This is the wrapper function for the AIM Selection analysis option.
 """
 function AimSelection(control_file = ""; args...)
-
-  AIM_SELECTION_VERSION :: VersionNumber = v"0.5.0"
   #
   # Print the logo. Store the initial directory.
   #
   print(" \n \n")
   println("     Welcome to OpenMendel's")
   println("   AIM Selection analysis option")
-  println("        version ", AIM_SELECTION_VERSION)
   print(" \n \n")
   println("Reading the data.\n")
   initial_directory = pwd()
@@ -65,7 +62,7 @@ function AimSelection(control_file = ""; args...)
   # Read the genetic data from the external files named in the keywords.
   #
   (pedigree, person, nuclear_family, locus, snpdata,
-    locus_frame, phenotype_frame, pedigree_frame, snp_definition_frame) =
+    locus_frame, phenotype_frame, person_frame, snp_definition_frame) =
     read_external_data_files(keyword)
   #
   # Check if SNP data were read.
@@ -78,7 +75,7 @@ function AimSelection(control_file = ""; args...)
   #
     println(" \nAnalyzing the data.\n")
     execution_error = aim_selection_option(person, snpdata,
-      pedigree_frame, snp_definition_frame, keyword)
+      person_frame, snp_definition_frame, keyword)
     if execution_error
       println(" \n \nERROR: Mendel terminated prematurely!\n")
     else
@@ -101,7 +98,7 @@ be assigned ancestry fractions and be fully typed. Ranks are assigned
 by a likelihood ratio heterogeneity test. 
 """
 function aim_selection_option(person::Person, snpdata::SnpDataStruct, 
-  pedigree_frame::DataFrame, snp_definition_frame::DataFrame, 
+  person_frame::DataFrame, snp_definition_frame::DataFrame, 
   keyword::Dict{AbstractString, Any})
   #
   # Define scalar constants.
@@ -113,10 +110,10 @@ function aim_selection_option(person::Person, snpdata::SnpDataStruct,
   # Allocate arrays and catalogue the ethnic groups.
   #
   ethnic = blanks(people)
-  pedigree_field = names(pedigree_frame)
-  ethnic_in_ped = (:Ethnic in pedigree_field)
+  person_field = names(person_frame)
+  ethnic_in_ped = (:Ethnic in person_field)
   if ethnic_in_ped
-    copyto!(ethnic, pedigree_frame[:Ethnic])
+    copyto!(ethnic, person_frame[:, :Ethnic])
   else
     throw(ArgumentError("The Ethnic field is not included " *
       "in the pedigree data.\n \n"))
@@ -186,7 +183,7 @@ function aim_selection_option(person::Person, snpdata::SnpDataStruct,
   # in the SNP definition frame.
   #
   aim_rank = StatsBase.ordinalrank(pvalue)
-  snp_definition_frame[:AIMRank] = aim_rank
+  snp_definition_frame[!, :AIMRank] = aim_rank
   #
   # Display the SNP's AIM rank on the screen and in a file, if requested.
   #

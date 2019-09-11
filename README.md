@@ -10,7 +10,7 @@ This [Julia](http://julialang.org/) package selects the SNPs that are most infor
 
 Within Julia, use the package manager to install MendelAimSelection:
 
-    pkg> add https://github.com/OpenMendel/MendelAimSelection.jl.git
+    pkg> add https://github.com/OpenMendel/MendelAimSelection.jl
 
 This package supports Julia v1.0+
 
